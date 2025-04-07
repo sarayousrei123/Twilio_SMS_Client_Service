@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSMS</title>
+        <link rel="icon" type="image/png" href="img/envelope.png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/user.css">
+       <style>
+    .status-success {
+        background-color: #edf7f2 !important; 
+        color: #2E7D32 !important;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+        .status-failed {
+            background-color: #fee0e6; 
+            color: #df4144;
+            padding: 5px 10px;
+            border-radius: 10px;
+        }
+        .status-pending {
+            background-color: #f8d585;
+            color: #e8b23c;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+
+        .status-badge i {
+            font-size: 14px;
+        }
+
+        .filter-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-container select, .filter-container button {
+            padding: 8px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .filter-container button {
+            background-color: #6f42c1;
+            color: white;
+            cursor: pointer;
+        }
+
+        
+        .header-actions {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-actions input[type="text"] {
+            padding: 12px 15px 12px 40px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            width: 300px;
+            transition: all 0.3s ease;
+            background-color: white;
+        }
+
+        .header-actions input[type="text"]:focus {
+            border-color: #6f42c1;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(111, 66, 193, 0.2);
+        }
+
+        .header-actions .fa-search {
+            position: absolute;
+            left: 15px;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="dashboard">
+        <div id="sidebar"></div>
+
+        <main class="main-content">
+            <div class="header">
+                <h1>Message History</h1>
+                <div class="header-actions">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchMessagesTop" placeholder="Search messages">
+                </div>
+            </div>
+
+            <div class="filter-container">
+               <label for="statusFilter">Status:</label>
+               <select id="statusFilter">
+                   <option value="all">All</option>
+                   <option value="Success">Success</option>
+                   <option value="Failed">Failed</option>
+                   <option value="unknown">unknown</option>
+               </select>
+
+               <label for="dateFilter">Date Range:</label>
+               <select id="dateFilter">
+                   <option value="7">Last 7 days</option>
+                   <option value="30">Last 30 days</option>
+                   <option value="all">All</option>
+               </select>
+
+               <button id="filter-btn" class="btn btn-primary" onclick="applyFilters()">
+                   <i class="fas fa-filter"></i> Filter
+               </button>
+           </div>
+
+           <div class="messages-container">
+               <h2>Sent Messages</h2>
+               <div id="historyContainer">
+                   <div id="messages">
+                     
+                   </div>
+               </div>
+           </div>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            console.log("✅ message_history.html loaded successfully.");
+            
+            loadMessages();
+            setupSearch(); 
+            loadSidebar(); 
+        });
+
+        function loadMessages() {
+            fetch("MessageHistoryServlet")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("HTTP error! Status: " + response.status);
+                    }
+                    return response.json();
+                })
+                .then(messages => {
+                    const messagesContainer = document.getElementById("messages");
+                    messagesContainer.innerHTML = "";
+
+                    messages.forEach(msg => {
+                        const messageItem = document.createElement("div");
+                        messageItem.classList.add("message-item");
+                        
+                    let statusClass = msg.status.toLowerCase() === "success" ? "status-success" 
+                                    : msg.status.toLowerCase() === "failed" ? "status-failed" 
+                                    : "status-pending";
+
+
+                        messageItem.innerHTML = `
+                            <div class="message-info">
+                             
+                                <div class="to">to: ${msg.toMsisdn}</div>
+                                
+                            </div>
+                            <div class="message-content">
+                                <p>${msg.body}</p>
+                            </div>
+                            <div class="timestamp"> ${msg.date}</div>
+                            <div class="message-status">
+                                <span class="status-badge ${statusClass}">${msg.status}</span>
+                            </div>
+                        `;
+                        messagesContainer.appendChild(messageItem);
+                    });
+
+                    console.log("✅ Messages loaded successfully.");
+                })
+                .catch(error => console.error("❌ Error loading messages:", error));
+        }
+
+        function setupSearch() {
+            document.querySelectorAll("#searchMessagesTop, #searchMessagesBottom").forEach(input => {
+                input.addEventListener("input", function () {
+                    const searchTerm = this.value.toLowerCase();
+                    document.querySelectorAll(".message-item").forEach(item => {
+                        const content = item.querySelector(".message-content p").textContent.toLowerCase();
+                        const from = item.querySelector(".from").textContent.toLowerCase();
+                        const to = item.querySelector(".to").textContent.toLowerCase();
+                        item.style.display = (content.includes(searchTerm) || from.includes(searchTerm) || to.includes(searchTerm)) ? "flex" : "none";
+                    });
+                });
+            });
+        }
+
+        function applyFilters() {
+            let statusFilter = document.getElementById("statusFilter").value.toLowerCase();
+            let messagesContainer = document.getElementById("messages"); 
+            let messages = messagesContainer.children; 
+
+            for (let msg of messages) {
+            let status = msg.querySelector(".status-badge").textContent.toLowerCase();
+                if (statusFilter === "all" || status === statusFilter) {
+                msg.style.visibility = "visible";
+                msg.style.position = "relative";
+                } else {
+                    msg.style.visibility = "hidden";
+                    msg.style.position = "absolute";
+
+                }
+            }
+        }
+
+
+       
+       document.addEventListener("DOMContentLoaded", function () {
+                fetch("sidebar.html")
+                        .then(response => response.text())
+                        .then(data => {
+                            document.getElementById("sidebar").innerHTML = data;
+
+                            
+                            highlightActiveLink();
+                        })
+                        .catch(error => console.error("An error occurred while loading the sidebar:", error));
+            });
+
+    
+            function highlightActiveLink() {
+                let currentPage = window.location.pathname.split("/").pop(); 
+                let links = document.querySelectorAll("#sidebar .nav-item");
+
+                links.forEach(link => {
+                    if (link.getAttribute("href") === currentPage) {
+                        link.classList.add("active");
+                    }
+                });
+            }
+               
+            
+    </script>
+
+ 
+</body>
+</html>

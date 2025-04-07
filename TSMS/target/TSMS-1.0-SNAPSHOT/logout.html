@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>TSMS</title>
+            <link rel="icon" type="image/png" href="img/envelope.png">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="./css/user.css">
+
+    </head>
+    <body>
+        <div class="dashboard">
+            <div id="sidebar" ></div>
+
+            <main class="main-content">
+                <div class="logout-container">
+                    <div class="logout-card">
+                        <div class="logout-icon">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </div>
+                        <h2>Logout Confirmation</h2>
+                        <p>Are you sure you want to logout from your account?</p>
+                        <div class="logout-actions">
+                            <button class="btn btn-secondary" onclick="window.history.back()">
+                                <i class="fas fa-arrow-left"></i>
+                                Cancel
+                            </button>
+                            <button class="btn btn-primary" onclick="handleLogout()">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <script>
+            function handleLogout() {
+                
+                window.location.href = 'LogoutServlet';
+            }
+
+
+            document.addEventListener("DOMContentLoaded", function () {
+                fetch("sidebar.html")
+                        .then(response => response.text())
+                        .then(data => {
+                            document.getElementById("sidebar").innerHTML = data;
+
+                            
+                            highlightActiveLink();
+                        })
+                        .catch(error => console.error("An error occurred while loading the sidebar:", error));
+            });
+
+    
+            function highlightActiveLink() {
+                let currentPage = window.location.pathname.split("/").pop(); 
+                let links = document.querySelectorAll("#sidebar .nav-item");
+
+                links.forEach(link => {
+                    if (link.getAttribute("href") === currentPage) {
+                        link.classList.add("active");
+                    }
+                });
+            }
+        </script>
+    </body>
+</html> 

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSMS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/admin.css">
+    <link rel="icon" type="image/png" href="img/envelope.png">
+    
+
+    <style>
+        .form-container{
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); 
+            padding: 30px; border-radius: 10px; 
+            background-color: #fff; 
+            height: auto;  
+            margin: 1rem auto;
+            width: 600px ;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div id="sidebar_admin"></div>
+
+        <main class="main-content">
+            <div class="header">
+                <h1>add Customer</h1>
+            </div>
+
+            <div class="form-container" >
+                <form id="addCustomerForm" action="AdminAddCustomerServlet" method="post" style="width: 500px;">
+                    <div class="input-box">
+                        <i class="fas fa-user" style="color: #7c4dff;"></i>
+                        <input type="text" id="customerName" name="username" placeholder="Name" required>
+                    </div>
+                    <div class="input-box">
+                        <i class="fas fa-phone" style="color: #7c4dff;"></i>
+                        <input type="tel" id="customerPhone" name="msisdn" placeholder="Phone Number" required>
+                    </div>
+                    <div class="input-box">
+                        <i class="fas fa-envelope" style="color: #7c4dff;"></i>
+                        <input type="email" id="customerEmail" name="email" placeholder="Email" required>
+                    </div>
+                    <div class="input-box">
+                        <i class="fas fa-lock"  style="color: #7c4dff;"></i>
+                        <input type="password" id="customerPassword" name="password" placeholder="Password" required>
+                    </div>
+                    <div class="input-box">
+                        <i class="fas fa-calendar" style="color: #7c4dff;"></i>
+                        <input type="date" id="customerBirthday" name="birthday" required>
+                    </div>
+                    <div class="input-box">
+                        <i class="fas fa-briefcase" style="color: #7c4dff;"></i>
+                        <input type="text" id="job" name="job" placeholder="Job" required>
+                    </div>
+                    <div class="input-box">
+                        <i class="fas fa-map-marker-alt" style="color: #7c4dff;"></i>
+                        <input type="text" id="address" name="address" placeholder="Address" required>
+                    </div>
+                    <div class="input-box">
+                        <i class="fas fa-key" style="color: #7c4dff;"></i>
+                        <input type="text" id="accountSID" name="twillio_sid" placeholder="Account SID" required>
+                    </div>
+                    <div class="input-box">
+                        <i class="fas fa-key" style="color: #7c4dff;"></i>
+                        <input type="text" id="accountToken" name="twillio_token" placeholder="Account Token" required>
+                    </div>
+                    <div class="button-container">
+                        
+                        <button type="submit" class="btn btn-primary" id="addCustomerBtn">
+                            <i class="fas fa-save"></i>
+                            Add
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        
+        document.getElementById('customerName').value = getUrlParameter('username');
+        document.getElementById('customerPhone').value = getUrlParameter('msisdn');
+        document.getElementById('customerEmail').value = getUrlParameter('email');
+        document.getElementById('customerPassword').value = getUrlParameter('password');
+        document.getElementById('customerBirthday').value = getUrlParameter('birthday');
+        document.getElementById('job').value = getUrlParameter('job');
+        document.getElementById('address').value = getUrlParameter('address');
+        document.getElementById('accountSID').value = getUrlParameter('twillio_sid');
+        document.getElementById('accountToken').value = getUrlParameter('twillio_token');
+      document.addEventListener("DOMContentLoaded", function () {
+    fetch("sidebar_admin.html")
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("sidebar_admin").innerHTML = data;
+            highlightActiveLink();
+        })
+        .catch(error => console.error("An error occurred while loading the sidebar:", error));
+});
+function highlightActiveLink() {
+                let currentPage = window.location.pathname.split("/").pop(); 
+                let links = document.querySelectorAll("#sidebar_admin .nav-item");
+
+                links.forEach(link => {
+                    if (link.getAttribute("href") === currentPage) {
+                        link.classList.add("active");
+                    }
+                });
+            }
+
+
+    </script>
+</body>
+</html> 

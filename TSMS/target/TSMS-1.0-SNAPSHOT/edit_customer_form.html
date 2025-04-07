@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TSMS</title>
+        <link rel="icon" type="image/png" href="img/envelope.png">
+
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard">
+            <div id="sidebar_admin"></div>
+
+    <div class="form-container">
+        <h2>Edit Customer</h2>
+        <form action="edit_customer.html" method="get" id="editCustomerForm" class="form-content">    
+            <div class="input-box">
+                <i class="fas fa-user"></i>
+                <input type="text" id="username" name="username" placeholder="Enter username" required>
+            </div>
+            <div class="button-container">
+                <button type="submit" class="btn btn-danger" id="editCustomerBtn">
+                    <i class="fas fa-edit"></i>
+                    Edit Customer
+                </button>
+            </div>
+        </form>
+    </div>
+                                   
+
+     <script>
+      
+      document.addEventListener("DOMContentLoaded", function () {
+                fetch("sidebar_admin.html")
+                        .then(response => response.text())
+                        .then(data => {
+                            document.getElementById("sidebar_admin").innerHTML = data;
+
+                            
+                            highlightActiveLink();
+                        })
+                        .catch(error => console.error("An error occurred while loading the sidebar:", error));
+            });
+
+    
+            function highlightActiveLink() {
+                let currentPage = window.location.pathname.split("/").pop(); 
+                let links = document.querySelectorAll("#sidebar_admin .nav-item");
+
+                links.forEach(link => {
+                    if (link.getAttribute("href") === currentPage) {
+                        link.classList.add("active");
+                    }
+                });
+            }
+
+    
+           
+    
+    document.getElementById("editCustomerForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const username = document.getElementById("username").value;
+        window.location.href = `edit_customer.html?username=${encodeURIComponent(username)}`;
+    });
+    </script>
+</body>
+</html>

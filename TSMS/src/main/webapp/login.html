@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8">
+    <title>TSMS</title>
+        <link rel="icon" type="image/png" href="img/envelope.png">
+
+    
+    <!-- Fontawesome CDN Link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/login.css">
+   </head>
+   <body>
+  <div class="container">
+    <input type="checkbox" id="flip">
+    <div class="cover">
+      <div class="front">
+        <img src="./img/64b7e585d494a88c78bf65482e7efa01.gif" alt="">
+        <div class="text">
+          <span class="text-1">Every new friend is a <br> new adventure</span>
+          <span class="text-2">Let's get connected</span>
+        </div>
+      </div>
+      <div class="back">
+        <!--<img class="backImg" src="images/backImg.jpg" alt="">-->
+        <img src="./img/64b7e585d494a88c78bf65482e7efa01.gif" alt="">
+
+        <div class="text">
+          <span class="text-1">Complete miles of journey <br> with one step</span>
+          <span class="text-2">Let's get started</span>
+        </div>
+      </div>
+    </div>
+    <div class="forms">
+        <div class="form-content">
+          <div class="login-form">
+            <div class="title">Login</div>
+            
+<form action="ChkLoginServlet" method="post">
+                <div class="input-boxes">
+              <div class="input-box">
+                <i class="fas fa-envelope"></i>
+                <input type="text" placeholder="Enter your username" required name="username">
+              </div>
+              <div class="input-box">
+                <i class="fas fa-lock"></i>
+                <input type="password" placeholder="Enter your password" required name="password">
+              </div>
+              <div class="button input-box">
+                <input type="submit" value="Submit">
+              </div>
+              <div class="text sign-up-text">Don't have an account? <label for="flip" style="color: #1b0538;">Sign up now</label></div>
+            </div>
+        </form>
+      </div>
+        <div class="signup-form">
+          <div class="title">Signup</div>
+<form action="RegisterServlet" method="post">
+                  <div class="input-boxes">
+              <div class="input-box">
+                <i class="fas fa-user"></i>
+                <input type="text" placeholder="Enter your name" required name="name">
+              </div>
+              <div class="input-box">
+                <i class="fas fa-envelope"></i>
+                <input type="email" placeholder="Enter your email" required name="email">
+              </div>
+              <div class="input-box">
+                <i class="fas fa-lock"></i>
+                <input type="password" placeholder="Enter your password" required name="password">
+              </div>
+              <div class="input-box">
+                <i class="fas fa-calendar"></i>
+                <input type="date" placeholder="Enter your birthday" required name="birthday">
+              </div>
+              <div class="input-box">
+                <i class="fas fa-phone"></i>
+                <input type="tel" placeholder="Enter your Phone Number" required name="phone">
+              </div>
+              <div class="input-box">
+                <i class="fas fa-briefcase"></i>
+                <input type="text" placeholder="Enter your job" required name="job">
+              </div>
+              <div class="input-box">
+                <i class="fas fa-location-dot"></i>
+                <input type="text" placeholder="Enter your address" required name="address">
+              </div>
+              <div class="input-box">
+                <i class="fas fa-phone"></i>
+                <input type="text" placeholder="Enter your sender id" required name="sender_id">
+              </div>
+              <div class="input-box">
+                <i class="fas fa-key"></i>
+                <input type="text" placeholder="Enter your Twilio SID" required name="twilio_sid">
+              </div>
+              <div class="input-box">
+                <i class="fas fa-key"></i>
+                <input type="password" placeholder="Enter your Twilio Auth Token" required name="twilio_auth_token">
+              </div>
+              
+              <div class="button input-box">
+                <input type="submit" value="Sumbit" name="submit">
+              </div>
+              <div class="text sign-up-text">Already have an account? <label for="flip" style="color: #1b0538;">Login now</label></div>
+            </div>
+      </form>
+    </div>
+    </div>
+    </div>
+  </div>
+       <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has("error")) {
+        const errorDiv = document.createElement("div");
+        errorDiv.textContent = "⚠️ Invalid username or password!";
+        errorDiv.style.color = "red";
+        errorDiv.style.fontWeight = "bold";
+        errorDiv.style.marginBottom = "10px";
+
+        const loginForm = document.querySelector(".login-form .input-boxes");
+        loginForm.insertBefore(errorDiv, loginForm.children[2]);
+    }
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSMS</title>
+        <link rel="icon" type="image/png" href="img/envelope.png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/admin.css">
+</head>
+<body onload="loadProfiles()">
+    <div class="dashboard">
+            <div id="sidebar_admin"></div>
+
+        <main class="main-content">
+            <div class="header">
+                <h1>Customers Overview</h1>
+                
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search Customers..." onkeyup="filterCustomers()">
+                </div>
+
+            </div>
+
+            <div class="table-container">
+                <div class="table-header">
+                    <h2 class="table-title">All Customers</h2>
+                   
+                </div>
+
+            <table class="data-table" id="profileContainer" ></table>
+        </main>
+    </div>
+
+          
+            
+    <script>
+        function loadProfiles() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "Customerlistservlet", true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    document.getElementById("profileContainer").innerHTML = xhr.responseText;
+                }
+            };
+            xhr.send();
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+                fetch("sidebar_admin.html")
+                        .then(response => response.text())
+                        .then(data => {
+                            document.getElementById("sidebar_admin").innerHTML = data;
+
+                            
+                            highlightActiveLink();
+                        })
+                        .catch(error => console.error("An error occurred while loading the sidebar:", error));
+            });
+
+    
+            function highlightActiveLink() {
+                let currentPage = window.location.pathname.split("/").pop(); 
+                let links = document.querySelectorAll("#sidebar_admin .nav-item");
+
+                links.forEach(link => {
+                    if (link.getAttribute("href") === currentPage) {
+                        link.classList.add("active");
+                    }
+                });
+            }
+
+   
+     
+        function filterCustomers() {
+        let input = document.getElementById("searchInput").value.toLowerCase();
+        let table = document.getElementById("profileContainer");
+        let rows = table.getElementsByTagName("tr");
+
+        for (let i = 1; i < rows.length; i++) { 
+            let nameCell = rows[i].getElementsByTagName("td")[0]; 
+            let phoneCell = rows[i].getElementsByTagName("td")[1]; 
+
+            if (nameCell && phoneCell) {
+                let nameText = nameCell.textContent.toLowerCase();
+                let phoneText = phoneCell.textContent.toLowerCase();
+
+                if (nameText.includes(input) || phoneText.includes(input)) {
+                    rows[i].style.display = ""; 
+                } else {
+                    rows[i].style.display = "none"; 
+                }
+            }
+        }
+    }
+    
+ 
+    
+    
+ 
+    
+</script>
+</body>
+</html>

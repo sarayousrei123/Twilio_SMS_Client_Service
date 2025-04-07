@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSMS</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="./css/admin.css">
+            <link rel="icon" type="image/png" href="img/envelope.png">
+
+
+    </head>
+    <body>
+        <div class="dashboard">
+            <div id="sidebar_admin"></div>
+
+            <main class="main-content">
+                <div class="header">
+                    <h1>Dashboard Overview</h1>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <a href="list_customer.html"> 
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i> 
+                            </div>
+                             <p>listCustomers</p>
+                        </a>
+                    </div>
+                    <div class="stat-card">
+                        <a href="add_customer.html"> 
+                            <div class="stat-icon">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <p>Add Customer</p>
+                        </a>
+                    </div>
+                    <div class="stat-card">
+                        <a href="delete_customer.html"> 
+                            <div class="stat-icon">
+                                <i class="fas fa-trash"></i>
+                                
+                            </div>
+                            <p>deleteCustomer</p>
+                        </a>
+                       
+                    </div>
+                    <div class="stat-card">
+                        <a href="edit_customer_form.html"> 
+                            <div class="stat-icon">
+                                <i class="fas fa-edit"></i>
+                                
+                            </div>
+                            <p>editCustomer</p>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div id="chart-container">
+                        <canvas id="userMessagesChart"></canvas>
+                    </div>
+                </div>
+            
+               
+            </main>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+         
+         const ctx = document.getElementById('userMessagesChart').getContext('2d');
+        const userMessagesChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Total Customers', 'Messages Sent'],
+                datasets: [{
+                    label: 'analyses',
+                  
+                    
+                    backgroundColor: [
+                        'rgba(102, 51, 153, 0.7)',
+                        'rgba(153, 102, 255, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(102, 51, 153, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    barPercentage: 0.6
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        display: false,
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+         document.addEventListener("DOMContentLoaded", function () {
+                fetch("sidebar_admin.html")
+                        .then(response => response.text())
+                        .then(data => {
+                            document.getElementById("sidebar_admin").innerHTML = data;
+
+                            highlightActiveLink();
+                        })
+                        .catch(error => console.error("An error occurred while loading the sidebar:", error));
+
+            
+            fetch("customerMessageCount")
+                .then(response => response.json())
+                .then(data => {
+                    
+                    userMessagesChart.data.datasets[0].data = [data.customerCount, data.messageCount];
+                    userMessagesChart.update();
+                })
+                .catch(error => console.error("An error occurred while fetching data for the chart:", error));
+            });
+
+    
+            function highlightActiveLink() {
+                let currentPage = window.location.pathname.split("/").pop(); 
+                let links = document.querySelectorAll("#sidebar_admin .nav-item");
+
+                links.forEach(link => {
+                    if (link.getAttribute("href") === currentPage) {
+                        link.classList.add("active");
+                    }
+                });
+            }
+           
+    </script>
+    </body>
+</html>

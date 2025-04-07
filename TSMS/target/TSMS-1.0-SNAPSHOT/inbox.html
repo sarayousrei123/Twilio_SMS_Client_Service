@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSMS</title>
+        <link rel="icon" type="image/png" href="img/envelope.png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/user.css">
+</head>
+<body>
+    <div class="dashboard">
+        <div id="sidebar"></div>
+        <main class="main-content">
+            <div class="header">
+                <h1>Inbox</h1>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="window.location.reload()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <div class="inbox-container">
+                <div class="messages" id="messages-container">
+                    <p>Loading messages...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        
+                
+        fetch('sidebar.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('sidebar').innerHTML = data;
+            })
+            .catch(error => console.error('An error occurred while loading the sidebar:', error));
+    
+        
+function loadInboxMessages() {
+    fetch("InboxServlet")
+        .then(response => {
+            console.log("Response status:", response.status); 
+            return response.text();
+        })
+        .then(data => {
+            console.log("Received data:", data); 
+            document.getElementById("messages-container").innerHTML = data;
+        })
+        .catch(error => {
+            console.error("Error fetching messages:", error);
+            document.getElementById("messages-container").innerHTML = "<p>Failed to load messages.</p>";
+        });
+}
+
+
+       
+        function loadSidebar() {
+            fetch("sidebar.html")
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("sidebar").innerHTML = data;
+                    highlightActiveLink();
+                })
+                .catch(error => console.error("Error loading sidebar:", error));
+        }
+
+        function highlightActiveLink() {
+            let currentPage = window.location.pathname.split("/").pop();
+            let links = document.querySelectorAll("#sidebar .nav-item");
+
+            links.forEach(link => {
+                if (link.getAttribute("href") === currentPage) {
+                    link.classList.add("active");
+                }
+            });
+        }
+
+        
+        document.addEventListener("DOMContentLoaded", function () {
+            loadSidebar();
+            loadInboxMessages();
+        });
+    </script>
+</body>
+</html>

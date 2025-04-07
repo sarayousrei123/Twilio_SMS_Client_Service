@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>TSMS</title>
+            <link rel="icon" type="image/png" href="img/envelope.png">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="./css/user.css">
+        
+    </head>
+    <body>
+        <div class="dashboard">
+            <div id="sidebar_admin"></div>
+            <main class="main-content">
+                <div class="header">
+                    <h1>User Profile</h1>
+
+                </div>
+
+                <div class="profile-form">
+                    <form id="profileForm" action="AdminEditCustomerServlet" method="post">
+                        <div class="form-grid">
+                            
+                            <div class="form-section">
+                                <h2 class="section-title">Personal Information</h2>
+                                <div class="form-group">
+                                    <label>Full Name</label>
+                                    <input type="text" class="form-control" name="username" id="username" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>Birthday</label>
+                                    <input type="date" class="form-control" name="birthday" id="birthday" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone Number (MSISDN)</label>
+                                    <input type="tel" class="form-control" name="msisdn" id="msisdn" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" class="form-control" name="email" id="email" required>
+                                </div>
+                            </div>
+
+                            
+                            <div class="form-section">
+                                <h2 class="section-title">Additional Information</h2>
+                                <div class="form-group">
+                                    <label>Job Title</label>
+                                    <input type="text" class="form-control" name="job" id="job">
+                                </div>
+                                <div class="form-group">
+                                    <label>Address</label>
+                                    <textarea class="form-control" name="address" id="address"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <h2 class="section-title">Twilio Configuration</h2>
+                                <div class="form-group">
+                                    <label>Twilio Account SID</label>
+                                    <input type="text" class="form-control" name="twillio_sid" id="twillio_sid" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Twilio Auth Token</label>
+                                    <input type="password" class="form-control" name="twillio_token" id="twillio_token" required>
+                                </div>
+                            </div>
+                            <div class="form-section">
+                                <h2 class="section-title">Security</h2>
+
+                                <div class="form-group">
+                                    <label>Current Password</label>
+                                    <input type="password" class="form-control" name="current_password" placeholder="Enter current password" id="current_password" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>New Password</label>
+                                    <input type="password" class="form-control" name="new_password" placeholder="Enter new password" id="new_password">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Confirm New Password</label>
+                                    <input type="password" class="form-control" name="confirm_password" placeholder="Confirm new password" id="confirm_password">
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+
+            </main>
+        </div>
+
+        <script>
+            
+            fetch('sidebar_admin.html')
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('sidebar_admin').innerHTML = data;
+                    })
+                    .catch(error => console.error('An error occurred while loading the sidebar:', error));
+
+            
+            document.addEventListener("DOMContentLoaded", function () {
+                const urlParams = new URLSearchParams(window.location.search);
+                const username = urlParams.get("username");
+
+
+                
+                fetch(`AdminEditCustomerServlet?username=${encodeURIComponent(username)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(err => {
+                                throw new Error(err.error || 'Network response was not ok');
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                       
+                        document.querySelector('input[name="username"]').value = data.username;
+                        document.querySelector('input[name="msisdn"]').value = data.msisdn;
+                        document.querySelector('input[name="email"]').value = data.email;
+                        document.querySelector('input[name="birthday"]').value = data.birthday;
+                        document.querySelector('input[name="job"]').value = data.job;
+                        document.querySelector('textarea[name="address"]').value = data.address;
+                        document.querySelector('input[name="twillio_sid"]').value = data.twillio_sid;
+                        document.querySelector('input[name="twillio_token"]').value = data.twillio_token;
+                        document.querySelector('input[name="current_password"]').value = data.password; // ملء كلمة المرور الحالية
+                    })
+                    .catch(error => {
+                        console.error('Error loading user data:', error);
+                        alert(error.message);
+                    });
+            });
+        </script>
+    </body>
+</html>
